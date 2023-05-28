@@ -23,12 +23,6 @@ iptables -A INPUT -i enp0s8 -s 192.168.6.1 -d 192.168.6.254 -p tcp --dport 22 -j
 iptables -A OUTPUT -o enp0s8 -s 192.168.6.254 -d 192.168.6.1 -p tcp --sport 22 -j ACCEPT
 
 
-#----------------------------------Liberando o SSH para o 192.168.0.0------------------------------------
-
-
-iptables -A INPUT -i enp0s3  -p tcp --dport 22 -j ACCEPT
-iptables -A OUTPUT -o enp0s3 -p tcp --sport 22 -j ACCEPT
-
 
 #------------------------Fazendo LOG de tentativas de acesso SSH ao roteador via Internet ---------------
 
@@ -82,12 +76,8 @@ iptables -A FORWARD -i enp0s9 -o enp0s3 -p tcp --sport 443 -m state --state ESTA
 
 iptables -A FORWARD -s 172.16.0.8/29 -i enp0s9 -o enp0s3 -d 8.8.8.8 -p udp --dport 53 -j ACCEPT
 iptables -A FORWARD -i enp0s3 -o enp0s9 -d 172.16.0.8/29 -p udp --sport 53 -j ACCEPT
-iptables -A FORWARD -s 172.16.0.8/29 -i enp0s9 -o enp0s3 -p tcp --dport 80 -j ACCEPT
-iptables -A FORWARD -i enp0s3 -o enp0s9 -d 172.16.0.8/29 -p tcp --sport 80 -j ACCEPT
-iptables -A FORWARD -s 172.16.0.8/29 -i enp0s9 -o enp0s3 -p tcp --dport 443 -j ACCEPT
-iptables -A FORWARD -i enp0s3 -o enp0s9 -d 172.16.0.8/29 -p tcp --sport 443 -j ACCEPT
-
-
+iptables -A FORWARD -s 172.16.0.8/29 -i enp0s9 -o enp0s3 -p tcp -m multiport --dport 80,433 -j ACCEPT
+iptables -A FORWARD -i enp0s3 -o enp0s9 -d 172.16.0.8/29 -p tcp -m multiport --sport 80,433 -j ACCEPT
 
 }
 
