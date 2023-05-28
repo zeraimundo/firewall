@@ -35,10 +35,12 @@ iptables -A OUTPUT -o enp0s3 -p tcp --sport 22 -j ACCEPT
 
 iptables -A INPUT -i enp0s3 -p tcp --dport 22 -j LOG --log-prefix "SSH via Internet      "
 
+
 #-------------------------------Registrando LOG de requisições DNS da LAN fora do 8.8.8.8------------------
 
 
 iptables -A FORWARD -s 192.168.6.0/24 -i enp0s8 -o enp0s3 ! -d 8.8.8.8 -p udp --dport 53 -j LOG --log-prefix "DNS inválido!    "
+
 
 #-------------------------------------------Liberar acesso ao servidor SIAF----------------------------------
 
@@ -53,14 +55,9 @@ forwarding(){
 #--------------------------------Fazendo NAT para a Lan acessar a Internet-------------------------------
 
 
-
 iptables -A FORWARD -i enp0s3 -o enp0s8 -m state --state RELATED,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -s 192.168.6.0/24 -i enp0s8 -o enp0s3 -d 8.8.8.8 -p udp --dport 53 -j ACCEPT
-iptables -A FORWARD -s 192.168.6.0/24 -i enp0s8 -o enp0s3 -p tcp --dport 80 -j ACCEPT
-iptables -A FORWARD -s 192.168.6.0/24 -i enp0s8 -o enp0s3 -p tcp --dport 443 -j ACCEPT
-iptables -A FORWARD -s 192.168.6.0/24 -i enp0s8 -o enp0s3 -p tcp --dport 23  -j ACCEPT
-iptables -A FORWARD -s 192.168.6.0/24 -i enp0s8 -o enp0s3 -p tcp --dport 21 -j ACCEPT
-iptables -A FORWARD -s 192.168.6.0/24 -i enp0s8 -o enp0s3 -p tcp --dport 20 -j ACCEPT
+iptables -A FORWARD -s 192.168.6.0/24 -i enp0s8 -o enp0s3 -p tcp -m multiport --dport 20,21,31,80,443,3306 -j ACCEPT
 
 
 
