@@ -84,7 +84,8 @@ iptables -A FORWARD -i enp0s3 -o enp0s9 -d 172.16.0.8/29 -p tcp -m multiport --s
 internet(){
 
 sysctl -w net.ipv4.ip_forward=1
-iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o enp0s3 -d 192.168.6.0/24 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o enp0s3 -d 172.16.0.8/29 -j MASQUERADE
 
 }
 
